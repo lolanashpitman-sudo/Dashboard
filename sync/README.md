@@ -1,8 +1,8 @@
 # Morning Board calendar + Canvas sync (cloud)
 
 `calendar-sync.mjs` runs inside the 6 AM cloud Routine "Lola's Morning Board refresh".
-It reads two feeds from environment variables and fills the board's Today panel and the
-To do · Canvas list. No Mac needed.
+It reads two feeds from environment variables and fills the board's Today panel and Next up
+(Canvas assignments show as events). No Mac needed.
 
 | Variable | Value |
 |---|---|

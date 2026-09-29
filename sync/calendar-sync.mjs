@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Morning Board calendar sync (cloud).
 // Reads Canvas and Apple (iCloud) calendar feeds from environment variables and prints
-// { synced, events, next, todo } JSON for the board's schedule and to-do list.
+// { synced, events, next } JSON for the board's Today panel. Canvas assignments show as events.
 //
 //   CANVAS_FEED_URL       Canvas → Calendar → "Calendar Feed" link
 //   ICLOUD_CALENDAR_URLS  one or more iCloud public calendar links (webcal://…), comma-separated
@@ -189,13 +189,8 @@ const isToday = (e) => dayKey(e.start) === todayKey || (e.start < today && e.end
 
 const result = {
   synced: loaded > 0,
-  events: items.filter((e) => isToday(e) && !e.assignment).map(row),
-  next: items.filter((e) => !isToday(e) && !e.assignment && e.start >= today).slice(0, 8).map((e) => ({ ...row(e), day: fmtDay(e.start) })),
-  todo: items.filter((e) => e.assignment && e.start >= today).slice(0, 8).map((e) => ({
-    id: e.url || `${e.title}|${dayKey(e.start)}`, title: e.title, course: e.course, due: fmtDay(e.start),
-    time: e.allDay ? "" : fmtTime(e.start),
-    url: /^https:\/\//.test(e.url) && !/feeds\/calendars|\.ics(\?|$)/i.test(e.url) ? e.url : "",
-  })),
+  events: items.filter(isToday).map(row),
+  next: items.filter((e) => !isToday(e) && e.start >= today).slice(0, 10).map((e) => ({ ...row(e), day: fmtDay(e.start) })),
 };
 if (problems.length) process.stderr.write("Calendar sync problems:\n- " + problems.join("\n- ") + "\n");
 process.stdout.write(JSON.stringify(result, null, 1) + "\n");
